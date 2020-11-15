@@ -10,6 +10,7 @@ import About from "./AboutComponent";
 import { connect } from "react-redux";
 import { addComment, fetchDishes } from "../redux/ActionCreators";
 import { actions } from "react-redux-form";
+import { fetchComments, fetchPromos } from "../redux/ActionCreators";
 
 const mapStateToProps = (state) => {
 	return {
@@ -29,14 +30,18 @@ const mapDispatchToProps = (dispatch) => ({
 	resetFeedbackForm: () => {
 		dispatch(actions.reset("feedback"));
 	},
+	fetchComments: () => dispatch(fetchComments()),
+	fetchPromos: () => dispatch(fetchPromos()),
 });
+
 class Main extends Component {
 	constructor(props) {
 		super(props);
 	}
-
 	componentDidMount() {
 		this.props.fetchDishes();
+		this.props.fetchComments();
+		this.props.fetchPromos();
 	}
 
 	render() {
@@ -49,12 +54,14 @@ class Main extends Component {
 						)[0]
 					}
 					dishesLoading={this.props.dishes.isLoading}
-					dishesErrMess={this.props.dishes.errMess}
+					dishErrMess={this.props.dishes.errMess}
 					promotion={
-						this.props.promotions.filter(
+						this.props.promotions.promotions.filter(
 							(promo) => promo.featured
 						)[0]
 					}
+					promoLoading={this.props.promotions.isLoading}
+					promoErrMess={this.props.promotions.errMess}
 					leader={
 						this.props.leaders.filter(
 							(leader) => leader.featured
@@ -74,10 +81,11 @@ class Main extends Component {
 					}
 					isLoading={this.props.dishes.isLoading}
 					errMess={this.props.dishes.errMess}
-					comments={this.props.comments.filter(
+					comments={this.props.comments.comments.filter(
 						(comment) =>
 							comment.dishId === parseInt(match.params.dishId, 10)
 					)}
+					commentsErrMess={this.props.comments.errMess}
 					addComment={this.props.addComment}
 				/>
 			);
